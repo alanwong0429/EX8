@@ -1,0 +1,22 @@
+install.packages("tm")
+install.packages("/dcs/pg11/phil/reuters/tm.corpus.Reuters21578/", repos = NULL, type="source")
+require(tm)
+require(tm.corpus.Reuters21578)
+data(Reuters21578)
+rt <- Reuters21578
+clean.rt <- rt
+clean.rt <- tm_map(clean.rt,tolower) 
+clean.rt <- tm_map(clean.rt,tolower) 
+clean.rt <- tm_map(clean.rt,removeNumbers) 
+clean.rt <- tm_map(clean.rt,removePunctuation)
+clean.rt <- tm_map(clean.rt,removeWords,stopwords(("english")))
+clean.rt <- tm_map(clean.rt,stripWhitespace) 
+dtm.1 <- TermDocumentMatrix(clean.rt)
+tdm.1 <- dtm.1
+dtm.1 <- as.DocumentTermMatrix(tdm.1, weightTf)
+dtm.2 <- removeSparseTerms(dtm.1,0.95)
+install.packages("topicmodels")
+require(topicmodels)
+dtm.row <- apply(dtm.2,1,sum)
+dtm.3 <- dtm.2[dtm.row>0,2]
+ctm.1<-LDA(dtm.3)
